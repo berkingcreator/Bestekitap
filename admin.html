@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beste Kitap - Yönetim Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/berkingcreator/Bestekitap/main/bestekitap1.jpg" sizes="512x512">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #f1f5f9; }
+        .brand-blue { color: #0066FF; }
+        .bg-brand-blue { background-color: #0066FF; }
+        #dashboard { display: none; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md text-center">
+            <img src="https://raw.githubusercontent.com/berkingcreator/Bestekitap/main/IMG-20260321-WA0013.jpg" class="h-16 mx-auto mb-6 rounded">
+            <h2 class="text-2xl font-extrabold mb-8 text-gray-800">Yönetim Paneli</h2>
+            <input type="password" id="adminPass" placeholder="Admin Şifresi" class="w-full border-2 border-gray-200 p-4 rounded-xl mb-6 text-center focus:border-brand-blue outline-none transition">
+            <button onclick="login()" class="w-full bg-brand-blue text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-500/30">Giriş Yap</button>
+        </div>
+    </div>
+
+    <div id="dashboard" class="min-h-screen p-6 md:p-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-center mb-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex items-center gap-4">
+                    <img src="https://raw.githubusercontent.com/berkingcreator/Bestekitap/main/IMG-20260321-WA0013.jpg" class="h-10 rounded">
+                    <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+                </div>
+                <button onclick="logout()" class="text-red-500 font-bold hover:bg-red-50 px-4 py-2 rounded-lg transition"><i class="fas fa-sign-out-alt mr-2"></i>Çıkış</button>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 h-fit">
+                    <h2 class="text-xl font-bold mb-6 border-b pb-4">Yeni Ürün Ekle</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="newName" placeholder="Ürün Adı" class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:border-brand-blue">
+                        <select id="newCat" class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:border-brand-blue">
+                            <option value="kitap">Kitap</option>
+                            <option value="kirtasiye">Kırtasiye</option>
+                            <option value="lgs">LGS Hazırlık</option>
+                            <option value="deneme">Deneme Sınavı</option>
+                        </select>
+                        <textarea id="newDesc" placeholder="Ürün detayları..." class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:border-brand-blue h-24"></textarea>
+                        
+                        <input type="file" id="fileInp" multiple class="hidden">
+                        <button onclick="document.getElementById('fileInp').click()" class="w-full bg-blue-50 text-brand-blue py-4 rounded-xl border-2 border-dashed border-blue-200 font-bold hover:bg-blue-100 transition">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i>Görsel Seç
+                        </button>
+                        <div id="previews" class="flex gap-2 flex-wrap mt-2"></div>
+                        
+                        <button onclick="saveProduct()" class="w-full bg-green-500 text-white py-4 rounded-xl font-bold hover:bg-green-600 transition shadow-lg mt-4">Sisteme Kaydet</button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-6 border-b pb-4">
+                        <h2 class="text-xl font-bold">Mevcut Ürünler</h2>
+                        <button onclick="loadProducts()" class="text-gray-500 hover:text-brand-blue"><i class="fas fa-sync-alt"></i> Yenile</button>
+                    </div>
+                    <div id="adminProductGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEx8kN8De32V0RTdBUPb_Ek8Kgv6wIH1A",
+            authDomain: "messi-2704f.firebaseapp.com",
+            projectId: "messi-2704f",
+            storageBucket: "messi-2704f.firebasestorage.app",
+            messagingSenderId: "605613457448",
+            appId: "1:605613457448:web:963fba25519587ae3d751d"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        window.db = db;
+        window.fs = { collection, addDoc, getDocs, deleteDoc, doc };
+    </script>
+
+    <script>
+        let tempImages = [];
+
+        async function login() {
+            const passInput = document.getElementById('adminPass').value;
+            if (!passInput) return alert('Lütfen şifre girin.');
+            if (!window.fs) return alert('Veritabanı bağlantısı bekleniyor, lütfen 1-2 saniye sonra tekrar deneyin.');
+
+            try {
+                const snap = await window.fs.getDocs(window.fs.collection(window.db, "admin_ayarlari"));
+                let gercekSifre = null;
+                
+                snap.forEach(doc => {
+                    if(doc.data().sifre) gercekSifre = doc.data().sifre;
+                });
+
+                if (gercekSifre && passInput === gercekSifre) {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    loadProducts();
+                } else {
+                    alert('Şifre hatalı!');
+                }
+            } catch (error) {
+                console.error("Firebase Hatası: ", error);
+                alert("Bağlantı hatası oluştu.");
+            }
+        }
+
+        function logout() {
+            document.getElementById('adminPass').value = '';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+        }
+
+        async function loadProducts() {
+            const grid = document.getElementById('adminProductGrid');
+            grid.innerHTML = '<p class="text-gray-400">Ürünler yükleniyor...</p>';
+            
+            const snap = await window.fs.getDocs(window.fs.collection(window.db, "beste_katalog"));
+            grid.innerHTML = '';
+            
+            if(snap.empty) {
+                grid.innerHTML = '<p class="text-gray-400">Henüz ürün eklenmemiş.</p>';
+                return;
+            }
+
+            snap.forEach(d => {
+                const p = d.data();
+                const dbId = d.id;
+                
+                const card = document.createElement('div');
+                card.className = "flex items-center gap-4 p-4 border rounded-xl hover:shadow-md transition bg-gray-50";
+                card.innerHTML = `
+                    <img src="${p.images?.[0] || 'https://via.placeholder.com/150'}" class="w-16 h-16 object-cover rounded-lg bg-white border">
+                    <div class="flex-1">
+                        <span class="text-[10px] font-bold text-brand-blue uppercase">${p.category}</span>
+                        <h3 class="font-bold text-sm text-gray-800 line-clamp-1">${p.name}</h3>
+                    </div>
+                    <button onclick="deleteProduct('${dbId}')" class="bg-red-100 text-red-500 w-10 h-10 rounded-lg hover:bg-red-500 hover:text-white transition flex items-center justify-center">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function saveProduct() {
+            const n = document.getElementById('newName').value;
+            const d = document.getElementById('newDesc').value;
+            const c = document.getElementById('newCat').value;
+
+            if(!n || tempImages.length === 0) return alert('Lütfen ürün adını yazın ve en az bir görsel seçin.');
+
+            await window.fs.addDoc(window.fs.collection(window.db, "beste_katalog"), {
+                id: Date.now(), name: n, desc: d, category: c, images: tempImages
+            });
+            
+            // Formu Temizle
+            document.getElementById('newName').value = '';
+            document.getElementById('newDesc').value = '';
+            tempImages = [];
+            document.getElementById('previews').innerHTML = '';
+            
+            alert('Ürün başarıyla eklendi!');
+            loadProducts();
+        }
+
+        async function deleteProduct(id) {
+            if(confirm('Bu ürünü silmek istediğinize emin misiniz? İşlem geri alınamaz.')) {
+                await window.fs.deleteDoc(window.fs.doc(window.db, "beste_katalog", id));
+                loadProducts();
+            }
+        }
+
+        // Görsel Önizleme İşlemi
+        document.getElementById('fileInp').onchange = (e) => {
+            Array.from(e.target.files).forEach(f => {
+                const r = new FileReader();
+                r.onload = (ev) => {
+                    tempImages.push(ev.target.result);
+                    const i = document.createElement('img');
+                    i.src = ev.target.result;
+                    i.className = "w-16 h-16 object-cover rounded border shadow-sm";
+                    document.getElementById('previews').appendChild(i);
+                };
+                r.readAsDataURL(f);
+            });
+        };
+
+        // Enter tuşu ile giriş yapma
+        document.getElementById('adminPass').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+    </script>
+</body>
+</html>
