@@ -9,67 +9,99 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/berkingcreator/Bestekitap/main/bestekitap1.jpg" sizes="512x512">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #f1f5f9; display: flex; flex-direction: column; min-height: 100vh; }
         .brand-blue { color: #0066FF; }
         .bg-brand-blue { background-color: #0066FF; }
-        #dashboard { display: none; }
+        #dashboard { display: none; flex-grow: 1; }
+        #loginScreen { flex-grow: 1; }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md text-center">
+    <div id="loginScreen" class="flex items-center justify-center p-4">
+        <div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md text-center border border-gray-100">
             <img src="https://raw.githubusercontent.com/berkingcreator/Bestekitap/main/IMG-20260321-WA0013.jpg" class="h-16 mx-auto mb-6 rounded">
-            <h2 class="text-2xl font-extrabold mb-8 text-gray-800">Yönetim Paneli</h2>
-            <input type="password" id="adminPass" placeholder="Admin Şifresi" class="w-full border-2 border-gray-200 p-4 rounded-xl mb-6 text-center focus:border-brand-blue outline-none transition">
+            <h2 class="text-2xl font-extrabold mb-8 text-gray-800">Sistem Girişi</h2>
+            <input type="password" id="adminPass" placeholder="Yönetici Şifresi" class="w-full border-2 border-gray-200 p-4 rounded-xl mb-6 text-center focus:border-brand-blue outline-none transition font-medium tracking-widest">
             <button onclick="login()" class="w-full bg-brand-blue text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-500/30">Giriş Yap</button>
         </div>
     </div>
 
-    <div id="dashboard" class="min-h-screen p-6 md:p-12">
+    <div id="dashboard" class="p-6 md:p-12">
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div class="flex items-center gap-4">
                     <img src="https://raw.githubusercontent.com/berkingcreator/Bestekitap/main/IMG-20260321-WA0013.jpg" class="h-10 rounded">
-                    <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+                    <div>
+                        <h1 class="text-2xl font-bold leading-tight">Admin Dashboard</h1>
+                        <p class="text-xs text-brand-blue font-semibold uppercase tracking-wider">Beste Kitap Yönetim Sistemi</p>
+                    </div>
                 </div>
-                <button onclick="logout()" class="text-red-500 font-bold hover:bg-red-50 px-4 py-2 rounded-lg transition"><i class="fas fa-sign-out-alt mr-2"></i>Çıkış</button>
+                <button onclick="logout()" class="text-red-500 font-bold hover:bg-red-50 px-5 py-2.5 rounded-xl transition flex items-center gap-2"><i class="fas fa-sign-out-alt"></i>Güvenli Çıkış</button>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 h-fit">
-                    <h2 class="text-xl font-bold mb-6 border-b pb-4">Yeni Ürün Ekle</h2>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 h-fit relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-brand-blue"></div>
+                    <h2 class="text-xl font-bold mb-6 border-b pb-4 flex items-center gap-2"><i class="fas fa-plus-circle text-brand-blue"></i> Yeni Ürün Ekle</h2>
                     <div class="space-y-4">
-                        <input type="text" id="newName" placeholder="Ürün Adı" class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:border-brand-blue">
-                        <select id="newCat" class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:border-brand-blue">
+                        <input type="text" id="newName" placeholder="Ürün Adı" class="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 outline-none focus:border-brand-blue focus:bg-white transition">
+                        <select id="newCat" class="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 outline-none focus:border-brand-blue focus:bg-white transition cursor-pointer">
                             <option value="kitap">Kitap</option>
                             <option value="kirtasiye">Kırtasiye</option>
                             <option value="lgs">LGS Hazırlık</option>
                             <option value="deneme">Deneme Sınavı</option>
                         </select>
-                        <textarea id="newDesc" placeholder="Ürün detayları..." class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:border-brand-blue h-24"></textarea>
+                        <textarea id="newDesc" placeholder="Ürün detayları ve açıklaması..." class="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 outline-none focus:border-brand-blue focus:bg-white transition h-28 resize-none"></textarea>
                         
                         <input type="file" id="fileInp" multiple class="hidden">
-                        <button onclick="document.getElementById('fileInp').click()" class="w-full bg-blue-50 text-brand-blue py-4 rounded-xl border-2 border-dashed border-blue-200 font-bold hover:bg-blue-100 transition">
-                            <i class="fas fa-cloud-upload-alt mr-2"></i>Görsel Seç
+                        <button onclick="document.getElementById('fileInp').click()" class="w-full bg-blue-50/50 text-brand-blue py-4 rounded-xl border-2 border-dashed border-blue-200 font-bold hover:bg-blue-50 hover:border-brand-blue transition flex justify-center items-center gap-2">
+                            <i class="fas fa-cloud-upload-alt text-xl"></i> Ürün Görsellerini Seç
                         </button>
-                        <div id="previews" class="flex gap-2 flex-wrap mt-2"></div>
+                        <div id="previews" class="flex gap-3 flex-wrap mt-2"></div>
                         
-                        <button onclick="saveProduct()" class="w-full bg-green-500 text-white py-4 rounded-xl font-bold hover:bg-green-600 transition shadow-lg mt-4">Sisteme Kaydet</button>
+                        <button onclick="saveProduct()" class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold hover:bg-black transition shadow-lg mt-4 flex justify-center items-center gap-2">
+                            <i class="fas fa-save"></i> Sisteme Kaydet
+                        </button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gray-800"></div>
                     <div class="flex justify-between items-center mb-6 border-b pb-4">
-                        <h2 class="text-xl font-bold">Mevcut Ürünler</h2>
-                        <button onclick="loadProducts()" class="text-gray-500 hover:text-brand-blue"><i class="fas fa-sync-alt"></i> Yenile</button>
+                        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-box-open text-gray-800"></i> Mevcut Ürünler</h2>
+                        <button onclick="loadProducts()" class="text-sm bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-brand-blue hover:text-white transition font-bold flex items-center gap-2">
+                            <i class="fas fa-sync-alt"></i> Listeyi Yenile
+                        </button>
                     </div>
-                    <div id="adminProductGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2">
+                    <div id="adminProductGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                         </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto py-6">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-gray-500 text-xs font-semibold flex items-center gap-2">
+                <i class="fas fa-shield-alt text-green-500"></i>
+                &copy; 2026 Beste Kitap. Tüm sistemler güvenli ve aktif.
+            </div>
+
+            <a href="https://www.ybg13.com" target="_blank" class="flex items-center gap-3 px-4 py-2 rounded-xl border border-gray-100 bg-gray-50 hover:border-brand-blue hover:shadow-md transition group">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Sistem Altyapısı</span>
+                <div class="w-px h-4 bg-gray-300"></div>
+                <span class="text-gray-800 text-xs font-black group-hover:text-brand-blue transition">YBG13™</span>
+            </a>
+        </div>
+    </footer>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -127,13 +159,13 @@
 
         async function loadProducts() {
             const grid = document.getElementById('adminProductGrid');
-            grid.innerHTML = '<p class="text-gray-400">Ürünler yükleniyor...</p>';
+            grid.innerHTML = '<div class="col-span-full flex justify-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-blue"></i></div>';
             
             const snap = await window.fs.getDocs(window.fs.collection(window.db, "beste_katalog"));
             grid.innerHTML = '';
             
             if(snap.empty) {
-                grid.innerHTML = '<p class="text-gray-400">Henüz ürün eklenmemiş.</p>';
+                grid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400 font-medium">Henüz sisteme ürün eklenmemiş.</div>';
                 return;
             }
 
@@ -142,15 +174,15 @@
                 const dbId = d.id;
                 
                 const card = document.createElement('div');
-                card.className = "flex items-center gap-4 p-4 border rounded-xl hover:shadow-md transition bg-gray-50";
+                card.className = "flex items-center gap-4 p-4 border border-gray-100 rounded-2xl hover:shadow-lg transition bg-white group";
                 card.innerHTML = `
-                    <img src="${p.images?.[0] || 'https://via.placeholder.com/150'}" class="w-16 h-16 object-cover rounded-lg bg-white border">
+                    <img src="${p.images?.[0] || 'https://via.placeholder.com/150'}" class="w-20 h-20 object-cover rounded-xl bg-gray-50 border border-gray-100 p-1">
                     <div class="flex-1">
-                        <span class="text-[10px] font-bold text-brand-blue uppercase">${p.category}</span>
-                        <h3 class="font-bold text-sm text-gray-800 line-clamp-1">${p.name}</h3>
+                        <span class="text-[10px] font-bold text-brand-blue uppercase bg-blue-50 px-2 py-1 rounded-md inline-block mb-2">${p.category}</span>
+                        <h3 class="font-bold text-sm text-gray-800 line-clamp-2">${p.name}</h3>
                     </div>
-                    <button onclick="deleteProduct('${dbId}')" class="bg-red-100 text-red-500 w-10 h-10 rounded-lg hover:bg-red-500 hover:text-white transition flex items-center justify-center">
-                        <i class="fas fa-trash"></i>
+                    <button onclick="deleteProduct('${dbId}')" class="bg-red-50 text-red-500 w-12 h-12 rounded-xl hover:bg-red-500 hover:text-white transition flex items-center justify-center opacity-70 group-hover:opacity-100 shadow-sm">
+                        <i class="fas fa-trash-alt"></i>
                     </button>
                 `;
                 grid.appendChild(card);
@@ -164,6 +196,11 @@
 
             if(!n || tempImages.length === 0) return alert('Lütfen ürün adını yazın ve en az bir görsel seçin.');
 
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...';
+            btn.disabled = true;
+
             await window.fs.addDoc(window.fs.collection(window.db, "beste_katalog"), {
                 id: Date.now(), name: n, desc: d, category: c, images: tempImages
             });
@@ -174,12 +211,14 @@
             tempImages = [];
             document.getElementById('previews').innerHTML = '';
             
-            alert('Ürün başarıyla eklendi!');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+
             loadProducts();
         }
 
         async function deleteProduct(id) {
-            if(confirm('Bu ürünü silmek istediğinize emin misiniz? İşlem geri alınamaz.')) {
+            if(confirm('Bu ürünü kalıcı olarak silmek istediğinize emin misiniz?')) {
                 await window.fs.deleteDoc(window.fs.doc(window.db, "beste_katalog", id));
                 loadProducts();
             }
@@ -193,7 +232,7 @@
                     tempImages.push(ev.target.result);
                     const i = document.createElement('img');
                     i.src = ev.target.result;
-                    i.className = "w-16 h-16 object-cover rounded border shadow-sm";
+                    i.className = "w-16 h-16 object-cover rounded-lg border-2 border-gray-100 shadow-sm";
                     document.getElementById('previews').appendChild(i);
                 };
                 r.readAsDataURL(f);
